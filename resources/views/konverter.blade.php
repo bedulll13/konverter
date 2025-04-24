@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metindo Inventory</title>
-    <!-- <link rel="shortcut icon" href="{{asset('logo.png')}}" type="image/x-icon"> -->
+    <title>Metindo Konverter</title>
+    <link rel="shortcut icon" href="{{asset('logo.png')}}" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
@@ -14,7 +14,7 @@
     <div class="bg-white w-full max-w-sm rounded-xl shadow-md p-6 space-y-4">
         <h2 class="text-lg font-semibold text-gray-800 text-center">Upload File</h2>
 
-        <form class="space-y-4" action="{{ route('excel.upload') }}" method="POST" enctype="multipart/form-data">
+        <form class="space-y-4" action="{{ $data == 'tmmin' ? route('tmmin.upload') : route('excel.upload') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="space-y-1">
                 <label for="" class="block text-sm font-medium text-gray-700">Choose salesperson</label>
@@ -23,6 +23,10 @@
                     <option value="PUTRI NURFADILLAH">PUTRI NURFADILLAH</option>
                     <option value="FEBRIA ANDRIYANI">FEBRIA ANDRIYANI</option>
                 </select>
+            </div>
+            <div class="space-y-1">
+                <label for="" class="block text-sm font-medium text-gray-700">Pricelist</label>
+                <input type="text" required  class="w-full rounded-md border border-gray-300 p-2 text-sm" name="pracelist">
             </div>
             <div class="space-y-1">
                 <label for="file" class="block text-sm font-medium text-gray-700">Choose file</label>

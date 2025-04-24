@@ -9,11 +9,11 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-class KonverterController extends Controller
+class YimmController extends Controller
 {
     public function index()
     {
-        $data = "adm";
+        $data = "yimm";
         return view('konverter', compact('data'));
     }
     public function upload(Request $request)
@@ -28,7 +28,7 @@ class KonverterController extends Controller
 
         $highestRow = $sheet->getHighestDataRow();
 
-        // Prepare new spreadsheet in Format ADM style
+        // Prepare new spreadsheet in Format YIMM style
         $spreadsheetB = new Spreadsheet();
         $sheetB = $spreadsheetB->getActiveSheet();
 
@@ -58,20 +58,20 @@ class KonverterController extends Controller
         $prevRef = '';
         $rowOutput = 2;
 
-        for ($row = 5; $row <= $highestRow; $row++) {
-            $vendorAlias = "PT Astra Daihatsu Motor";
+        for ($row = 2; $row <= $highestRow; $row++) {
+            $vendorAlias = "PT Yamaha Indonesia Motor Manufacturing";
             $Pracelist = $request->pracelist;
-            $poNumber = $sheet->getCell("L$row")->getValue();
+            $poNumber = $sheet->getCell("H$row")->getValue();
             $plantCode = "Store Finish Goods";
-            $partNo = $sheet->getCell("X$row")->getValue();
-            $custref = $sheet->getCell("K$row")->getValue();
-            $orderQty = $sheet->getCell("AD$row")->getValue();
+            $partNo = $sheet->getCell("F$row")->getValue();
+            $custref = $sheet->getCell("H$row")->getValue();
+            $orderQty = $sheet->getCell("Q$row")->getValue();
             $Aac = "Masspro";
             $Tags = "Automotive,Regular";
             $Salper = $request->salesperson;
 
-            $deliveryCell = $sheet->getCell("P$row");
-            $deliveryTime = $sheet->getCell("Q$row")->getValue();
+            $deliveryCell = $sheet->getCell("N$row");
+            $deliveryTime = $sheet->getCell("P$row")->getValue();
             $rawValue = $deliveryCell->getValue();
 
             $deliveryDate = Date::excelToDateTimeObject($rawValue)->format('Y-m-d');
@@ -108,7 +108,7 @@ class KonverterController extends Controller
 
         // Save the result
         $writer = IOFactory::createWriter($spreadsheetB, 'Xlsx');
-        $tempPath = storage_path('app/public/Konverter_ADM.xlsx');
+        $tempPath = storage_path('app/public/Konverter_YIMM.xlsx');
         $writer->save($tempPath);
 
         return response()->download($tempPath)->deleteFileAfterSend(true);
