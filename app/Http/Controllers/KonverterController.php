@@ -23,7 +23,7 @@ class KonverterController extends Controller
 
         $reader = new Xlsx();
         $reader->setReadDataOnly(false);
-        $spreadsheet = $reader->load(storage_path('app/' . $path));
+        $spreadsheet = $reader->load(storage_path('app/private/' . $path));
         $sheet = $spreadsheet->getActiveSheet();
 
         $highestRow = $sheet->getHighestDataRow();
@@ -40,15 +40,18 @@ class KonverterController extends Controller
             "x_studio_po_number",
             "warehouse_id",
             "order_line/product_id/default_code",
+            "x_studio_order_no",
             "order_line/product_uom_qty",
             "Analytic Account",
             "tag_ids",
             "client_order_ref",
             "user_id",
             "commitment_date",
+            "qty_kbn",
+            "del_cycle",
         ];
 
-        $letters = range('A', 'M'); // A to M
+        $letters = range('A', 'P'); // A to P
 
         // Set headers
         foreach ($columns as $key => $col) {
@@ -60,12 +63,16 @@ class KonverterController extends Controller
 
         for ($row = 5; $row <= $highestRow; $row++) {
             $vendorAlias = "PT Astra Daihatsu Motor";
+            $partship = $request->partship;
             $Pracelist = $request->pracelist;
             $poNumber = $sheet->getCell("L$row")->getValue();
             $plantCode = "Store Finish Goods";
             $partNo = $sheet->getCell("X$row")->getValue();
+            $orderno = $sheet->getCell("Z$row")->getValue();
             $custref = $sheet->getCell("K$row")->getValue();
             $orderQty = $sheet->getCell("AD$row")->getValue();
+            $qtykbn = $sheet->getCell("AC$row")->getValue();
+            $cycle = $sheet->getCell("R$row")->getValue();
             $Aac = "Masspro";
             $Tags = "Automotive,Regular";
             $Salper = $request->salesperson;
@@ -81,24 +88,27 @@ class KonverterController extends Controller
             $clientRef = $custref;
 
             if ($clientRef !== $prevRef) {
-                // First occurrence of a new client_order_ref: print full row
-                $sheetB->setCellValue("A$rowOutput", $vendorAlias);         // Customer
-                $sheetB->setCellValue("B$rowOutput", $vendorAlias);         // Invoice Address
-                $sheetB->setCellValue("C$rowOutput", $vendorAlias);         // Delivery Address
-                $sheetB->setCellValue("D$rowOutput", $Pracelist);           // Pricelist
-                $sheetB->setCellValue("E$rowOutput", $poNumber);            // PO Number
-                $sheetB->setCellValue("F$rowOutput", $plantCode);           // Warehouse
-                $sheetB->setCellValue("G$rowOutput", $partNo);              // Product
-                $sheetB->setCellValue("H$rowOutput", $orderQty);            // Quantity
-                $sheetB->setCellValue("I$rowOutput", $Aac);                 // Analytic Account
-                $sheetB->setCellValue("J$rowOutput", $Tags);                // Tags
-                $sheetB->setCellValue("K$rowOutput", $custref);             // Customer Reference
-                $sheetB->setCellValue("L$rowOutput", $Salper);              // Salesperson
-                $sheetB->setCellValue("M$rowOutput", $deliveryCombined);    // Delivery Date
+                $sheetB->setCellValue("A$rowOutput", $vendorAlias);
+                $sheetB->setCellValue("B$rowOutput", $vendorAlias);
+                $sheetB->setCellValue("C$rowOutput", $partship);
+                $sheetB->setCellValue("D$rowOutput", $Pracelist);
+                $sheetB->setCellValue("E$rowOutput", $poNumber);
+                $sheetB->setCellValue("F$rowOutput", $plantCode);
+                $sheetB->setCellValue("G$rowOutput", $partNo);
+                $sheetB->setCellValue("H$rowOutput", $orderno);
+                $sheetB->setCellValue("I$rowOutput", $orderQty);
+                $sheetB->setCellValue("J$rowOutput", $Aac);
+                $sheetB->setCellValue("K$rowOutput", $Tags);
+                $sheetB->setCellValue("L$rowOutput", $custref);
+                $sheetB->setCellValue("M$rowOutput", $Salper);
+                $sheetB->setCellValue("N$rowOutput", $deliveryCombined);
+                $sheetB->setCellValue("O$rowOutput", $qtykbn); // tambahkan ini
+                $sheetB->setCellValue("P$rowOutput", $cycle);
             } else {
-                // Same client_order_ref: only write product & quantity
-                $sheetB->setCellValue("G$rowOutput", $partNo);              // Product
-                $sheetB->setCellValue("H$rowOutput", $orderQty);            // Quantity
+                $sheetB->setCellValue("G$rowOutput", $partNo);
+                $sheetB->setCellValue("H$rowOutput", $orderno);
+                $sheetB->setCellValue("I$rowOutput", $orderQty);
+                $sheetB->setCellValue("O$rowOutput", $qtykbn);
             }
 
             $rowOutput++;

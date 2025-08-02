@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlvaController;
+use App\Http\Controllers\AsiController;
 use App\Http\Controllers\HinoController;
 use App\Http\Controllers\HpmController;
 use App\Http\Controllers\HyundaiController;
@@ -17,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route :: get('/adm',[KonverterController::class,'index']);
-Route :: post('/adm',[KonverterController::class,'upload'])->name('excel.upload');
+Route :: post('/adm',[KonverterController::class,'upload'])->name('adm.upload');
 Route :: get('/tmmin',[TmminController::class,'index']);
 Route :: post('/tmmin',[TmminController::class,'upload'])->name('tmmin.upload');
 Route :: get('/yimm',[YimmController::class,'index']);
